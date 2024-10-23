@@ -1,0 +1,4 @@
+<?php
+$MESS['AWZ_WINDOW_AGELIMIT_PARAM_DESCR_NAME'] = 'AWZ: Возрастное ограничение';
+$MESS['AWZ_WINDOW_AGELIMIT_PARAM_DESCR_GROUP'] = 'Zahalski.dev';
+$MESS['AWZ_WINDOW_AGELIMIT_PARAM_DESCR_GROUP_USER'] = 'Пользователь';
