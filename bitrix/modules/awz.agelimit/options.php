@@ -70,14 +70,14 @@ $tabControl->Begin();
                         <?=Loc::getMessage('AWZ_AGELIMIT_OPT_SHOW_DESC')?>.
                     </span>
                 </div>
-                <pre style="background: #ffffff;padding:10px;">
+                <textarea style="background: #ffffff;padding:10px;width:100%;height:100px;">
 <?='<?'?>$APPLICATION->IncludeComponent("awz:window.agelimit",".default",
     Array(
         "COMPONENT_TEMPLATE" => ".default"
     ),
     null, array("HIDE_ICONS"=>"Y")
 );<?='?>'?>
-                </pre>
+                </textarea>
             </td>
         </tr>
         <?
