@@ -1,4 +1,4 @@
-# AWZ: Секретный звонок (awz.agelimit)
+# AWZ: Возрастное ограничение (awz.agelimit)
 
 ### [Установка модуля](https://github.com/zahalski/awz.agelimit/tree/main/docs/install.md)
 
