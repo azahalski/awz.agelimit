@@ -17,7 +17,7 @@
 ### код вызова компонента
 
 ```php
-//разместить в footerюзрз шаблона перед </body>
+//разместить в footer.php шаблона перед </body>
 <?$APPLICATION->IncludeComponent("awz:window.agelimit",
 ".default",
     Array(
