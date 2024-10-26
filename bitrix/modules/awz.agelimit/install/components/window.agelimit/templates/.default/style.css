@@ -25,7 +25,7 @@
 }
 .awz_agelimit__icon {margin-top:-2em;}
 .awz_agelimit__icon svg {width:80px;height:auto;margin:1em auto;}
-.awz_agelimit__title, .awz_agelimit__desc {max-width: 70%;display:block;margin: 0 auto;clear: both;overflow: hidden;}
+.awz_agelimit__title, .awz_agelimit__desc {max-width: 80%;display:block;margin: 0 auto;clear: both;overflow: hidden;}
 .awz_agelimit__title {font-size: 1.4em;font-weight: bold;margin-bottom: 1em;}
 .awz_agelimit__desc {font-size: 0.9em;line-height: 1.2em;font-weight: normal;margin-bottom: 1em;}
 .awz_agelimit__close_wrap {font-size: 0.8em;margin-bottom: 1em;}
@@ -34,28 +34,28 @@
 
 
 .awz_agelimit__save {
-   background-image: linear-gradient(#ec4242, #ff0000);
-   border: 1px solid #ec4242;
-   border-radius: 4px;
-   box-sizing: border-box;
-   color: #FFFFFF;
-   cursor: pointer;
-   direction: ltr;
-   display: block;
-   font-size: 17px;
-   font-weight: 400;
-   letter-spacing: -.022em;
-   line-height: 1.47059;
-   min-width: 30px;
-   overflow: visible;
-   padding: 4px 15px;
-   text-align: center;
-   vertical-align: baseline;
-   user-select: none;
-   -webkit-user-select: none;
-   touch-action: manipulation;
-   white-space: nowrap;
-   color: #ffffff;
+    background-image: linear-gradient(#ec4242, #ff0000);
+    border: 1px solid #ec4242;
+    border-radius: 4px;
+    box-sizing: border-box;
+    color: #FFFFFF;
+    cursor: pointer;
+    direction: ltr;
+    display: block;
+    font-size: 17px;
+    font-weight: 400;
+    letter-spacing: -.022em;
+    line-height: 1.47059;
+    min-width: 30px;
+    overflow: visible;
+    padding: 4px 15px;
+    text-align: center;
+    vertical-align: baseline;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+    color: #ffffff;
 }
 
 .awz_agelimit__save:disabled {
@@ -84,6 +84,11 @@
     color: #ffffff;
 }
 
+@media (max-height: 640px) and (orientation: landscape) {
+    .awz_agelimit__icon {display:none;}
+    .awz_agelimit__title {font-size:1.2em;padding: 0 10px;background:#ffffff;}
+    .awz_agelimit__message_wrap {border-radius: 5px;}
+}
 @media (orientation: portrait) {
     .awz_agelimit__message_wrap {
         width: 70vw;
