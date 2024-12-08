@@ -52,12 +52,6 @@ $aTabs[] = array(
     "TITLE" => Loc::getMessage('AWZ_AGELIMIT_OPT_SECT1')
 );
 
-$aTabs[] = array(
-    "DIV" => "edit3",
-    "TAB" => Loc::getMessage('AWZ_AGELIMIT_OPT_SECT2'),
-    "ICON" => "vote_settings",
-    "TITLE" => Loc::getMessage('AWZ_AGELIMIT_OPT_SECT2')
-);
 $saveUrl = $APPLICATION->GetCurPage(false).'?mid='.htmlspecialcharsbx($module_id).'&lang='.LANGUAGE_ID.'&mid_menu=1';
 $tabControl = new CAdminTabControl("tabControl", $aTabs);
 $tabControl->Begin();
