@@ -46,26 +46,25 @@ class awz_agelimit extends CModule
         $this->createAgents();
 
         ModuleManager::RegisterModule($this->MODULE_ID);
-        LocalRedirect('/bitrix/admin/settings.php?lang='.LANG.'&mid='.$this->MODULE_ID.'&mid_menu=1');
+
+        $filePath = dirname(__DIR__ . '/../../options.php');
+        if(file_exists($filePath)){
+            LocalRedirect('/bitrix/admin/settings.php?lang='.LANG.'&mid='.$this->MODULE_ID.'&mid_menu=1');
+        }
 
         return true;
     }
 
     function DoUninstall()
     {
-        $this->deleteAgents();
-        $this->UnInstallEvents();
-        $this->UnInstallFiles();
-        ModuleManager::UnRegisterModule($this->MODULE_ID);
-        return true;
-        /*
         global $APPLICATION, $step;
 
         $step = intval($step);
-        if($step < 2) {
+        if($step < 2) { //выводим предупреждение
             $APPLICATION->IncludeAdminFile(Loc::getMessage('AWZ_AGELIMIT_INSTALL_TITLE'), $_SERVER['DOCUMENT_ROOT'].'/bitrix/modules/'. $this->MODULE_ID .'/install/unstep.php');
         }
         elseif($step == 2) {
+            //проверяем условие
             if($_REQUEST['save'] != 'Y' && !isset($_REQUEST['save'])) {
                 $this->UnInstallDB();
             }
@@ -76,17 +75,46 @@ class awz_agelimit extends CModule
             ModuleManager::UnRegisterModule($this->MODULE_ID);
 
             return true;
-        }*/
+        }
     }
 
     function InstallDB()
     {
-        return true;
+        global $DB, $DBType, $APPLICATION;
+        $connection = \Bitrix\Main\Application::getConnection();
+        $this->errors = false;
+        /*if(!$this->errors && !$DB->TableExists('b_'.implode('_', explode('.',$this->MODULE_ID)).'_goption')) {
+            $this->errors = $DB->RunSQLBatch($_SERVER['DOCUMENT_ROOT'] . "/bitrix/modules/". $this->MODULE_ID ."/install/db/".$connection->getType()."/install.sql");
+        }*/
+        if(!$this->errors && !$DB->TableExists(implode('_', explode('.',$this->MODULE_ID)).'_permission')) {
+            $this->errors = $DB->RunSQLBatch($_SERVER['DOCUMENT_ROOT'] . "/bitrix/modules/" . $this->MODULE_ID . "/install/db/".$connection->getType()."/access.sql");
+        }
+        if (!$this->errors) {
+            return true;
+        } else {
+            $APPLICATION->ThrowException(implode("", $this->errors));
+            return $this->errors;
+        }
     }
 
     function UnInstallDB()
     {
-        return true;
+        global $DB, $DBType, $APPLICATION;
+        $connection = \Bitrix\Main\Application::getConnection();
+        $this->errors = false;
+        /*if (!$this->errors) {
+            $this->errors = $DB->RunSQLBatch($_SERVER['DOCUMENT_ROOT'] . "/bitrix/modules/" . $this->MODULE_ID . "/install/db/" . $connection->getType() . "/uninstall.sql");
+        }*/
+        if (!$this->errors) {
+            $this->errors = $DB->RunSQLBatch($_SERVER['DOCUMENT_ROOT'] . "/bitrix/modules/" . $this->MODULE_ID . "/install/db/" . $connection->getType() . "/unaccess.sql");
+        }
+        if (!$this->errors) {
+            return true;
+        }
+        else {
+            $APPLICATION->ThrowException(implode("", $this->errors));
+            return $this->errors;
+        }
     }
 
     function InstallEvents()
@@ -94,6 +122,14 @@ class awz_agelimit extends CModule
         $eventManager = EventManager::getInstance();
         $eventManager->registerEventHandlerCompatible("main", "OnEndBufferContent",
             $this->MODULE_ID, '\Awz\AgeLimit\HandlersBx', 'OnEndBufferContent'
+        );
+        $eventManager->registerEventHandlerCompatible(
+            'main', 'OnAfterUserUpdate',
+            $this->MODULE_ID, '\\Awz\\Agelimit\\Access\\Handlers', 'OnAfterUserUpdate'
+        );
+        $eventManager->registerEventHandlerCompatible(
+            'main', 'OnAfterUserAdd',
+            $this->MODULE_ID, '\\Awz\\Agelimit\\Access\\Handlers', 'OnAfterUserUpdate'
         );
         return true;
     }
@@ -105,17 +141,35 @@ class awz_agelimit extends CModule
             'main', 'OnEndBufferContent',
             $this->MODULE_ID, '\Awz\AgeLimit\HandlersBx', 'OnEndBufferContent'
         );
+        $eventManager->unRegisterEventHandler(
+            'sale', 'OnAfterUserUpdate',
+            $this->MODULE_ID, '\\Awz\\Agelimit\\Access\\Handlers', 'OnAfterUserUpdate'
+        );
+        $eventManager->unRegisterEventHandler(
+            'sale', 'OnAfterUserAdd',
+            $this->MODULE_ID, '\\Awz\\Agelimit\\Access\\Handlers', 'OnAfterUserUpdate'
+        );
         return true;
     }
 
     function InstallFiles()
     {
-        CopyDirFiles($_SERVER['DOCUMENT_ROOT']."/bitrix/modules/".$this->MODULE_ID."/install/components/window.agelimit/", $_SERVER['DOCUMENT_ROOT']."/bitrix/components/awz/window.agelimit", true, true);
+        CopyDirFiles(
+            $_SERVER['DOCUMENT_ROOT']."/bitrix/modules/".$this->MODULE_ID."/install/components/window.agelimit/",
+            $_SERVER['DOCUMENT_ROOT']."/bitrix/components/awz/window.agelimit",
+            true, true
+        );
+        CopyDirFiles($_SERVER['DOCUMENT_ROOT']."/bitrix/modules/".$this->MODULE_ID."/install/components/agelimit.config.permissions/",
+            $_SERVER['DOCUMENT_ROOT']."/bitrix/components/awz/agelimit.config.permissions",
+            true, true
+        );
+
         return true;
     }
 
     function UnInstallFiles()
     {
+        DeleteDirFilesEx("/bitrix/components/awz/agelimit.config.permissions");
         DeleteDirFilesEx("/bitrix/components/awz/window.agelimit");
         return true;
     }
@@ -129,8 +183,6 @@ class awz_agelimit extends CModule
     }
 
     function checkOldInstallTables(){
-
         return true;
-
     }
 }
